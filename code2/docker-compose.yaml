@@ -1,0 +1,25 @@
+version: "3"
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - dbvol:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=filedb
+  uploader:
+    build:
+      context: .
+      dockerfile: uploader.dockerfile
+    depends_on:
+      - db
+    ports:
+      - "8888:8888"
+  generator:
+    build:
+      context: .
+      dockerfile: generator.dockerfile
+    depends_on:
+      - db
+volumes:
+  dbvol:
