@@ -1,0 +1,34 @@
+version: "3"
+services:
+  uploader:
+    build:
+      context: .
+      dockerfile: uploader.dockerfile
+    ports:
+      - "8888:8888"
+    depends_on:
+      - db
+    volumes:
+      - dbdata:/app/db
+      - filevol:/app/files
+    command: chmod +x uploader.sh  
+  generator:
+    build:
+      context: .
+      dockerfile: generator.dockerfile
+    depends_on:
+      - db
+    volumes:
+      - dbdata:/app/db
+      - filevol:/app/files
+    command: chmod +x generator.sh
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+  filevol:
